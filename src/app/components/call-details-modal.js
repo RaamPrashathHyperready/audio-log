@@ -20,7 +20,7 @@ export default function CallDetailsModal({ call, onClose }) {
 
   // Get job ID from audiofile_name
   const jobId = call.audiofile_name?.split(".")[0] || ""
-  const customerNumber = jobId.slice(-10)
+  const customerNumber = jobId
 
   const formatDiarizedTranscript = (transcript) => {
     if (!transcript) return []

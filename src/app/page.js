@@ -229,7 +229,7 @@ export default function CallAnalysisDashboard() {
             <button className="flex items-center gap-2 text-gray-600 hover:text-gray-800">←</button>
             <h1 className="text-xl md:text-2xl font-semibold">Deep Dive Analysis</h1>
           </div>
-          <p className="text-gray-600 mb-6">Kalyan 527 Calls - {calls.length} calls analyzed</p>
+          <p className="text-gray-600 mb-6">Kalyan 100 Calls - {calls.length} calls analyzed</p>
 
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <Select value={timelineFilter} onValueChange={setTimelineFilter}>
@@ -297,7 +297,7 @@ export default function CallAnalysisDashboard() {
                     <div className="space-y-2">
                       {/* Customer number and language on top */}
                       <div className="flex items-center gap-2">
-                        <div className="font-medium">{jobId.slice(-10)}</div>
+                        <div className="font-medium">{jobId}</div>
                         <Badge variant="outline" className={getLanguageColor(callData.language_code)}>
                           <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                             <path
