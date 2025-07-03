@@ -1,12 +1,13 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Search, Eye, ChevronLeft, ChevronRight, FileAudio} from "lucide-react"
+import { Search, Eye, ChevronLeft, ChevronRight } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import CallDetailsModal from "./components/call-details-modal"
+import AudioPlayer from "./components/audio-player"
 
 export default function CallAnalysisDashboard() {
   const [calls, setCalls] = useState([])
@@ -141,7 +142,7 @@ export default function CallAnalysisDashboard() {
         buttons.push(
           <Button
             key={i}
-            variant={currentPage === i ? "blueDefault" : "outline"}
+            variant={currentPage === i ? "default" : "outline"}
             size="sm"
             onClick={() => handlePageChange(i)}
             className="w-8 h-8"
@@ -228,7 +229,7 @@ export default function CallAnalysisDashboard() {
             <button className="flex items-center gap-2 text-gray-600 hover:text-gray-800">←</button>
             <h1 className="text-xl md:text-2xl font-semibold">Deep Dive Analysis</h1>
           </div>
-          <p className="text-gray-600 mb-6">Kalyan 100 Calls - {calls.length} calls analyzed</p>
+          <p className="text-gray-600 mb-6">Kalyan 527 Calls - {calls.length} calls analyzed</p>
 
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <Select value={timelineFilter} onValueChange={setTimelineFilter}>
@@ -270,7 +271,7 @@ export default function CallAnalysisDashboard() {
 
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="overflow-x-auto">
-            <div className="min-w-[1000px]">
+            <div className="min-w-[1200px]">
               <div className="grid grid-cols-[2fr_2fr_1.5fr_1.5fr_2.5fr_0.5fr] gap-4 px-4 py-3 border-b bg-gray-50 font-medium text-sm text-gray-700">
                 <div>CUSTOMER NUMBER</div>
                 <div>PRODUCTS DISCUSSED</div>
@@ -285,30 +286,32 @@ export default function CallAnalysisDashboard() {
                 const result = callData.result
                 const conversationOverview = result.conversation_overview || {}
                 const products = conversationOverview.products_discussed || []
+                // Use the audiofile_name without extension as the job_id
+                const jobId = callData.audiofile_name.split(".")[0]
 
                 return (
                   <div
                     key={call._id}
-                    className="grid grid-cols-[2fr_2fr_1.5fr_1.5fr_2.5fr_0.5fr] gap-4 px-4 py-3 border-b hover:bg-gray-50 items-center"
+                    className="grid grid-cols-[2fr_2fr_1.5fr_1.5fr_2.5fr_0.5fr] gap-4 px-4 py-4 border-b hover:bg-gray-50 items-start"
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="space-y-2">
+                      {/* Customer number and language on top */}
                       <div className="flex items-center gap-2">
-                        <FileAudio className="text-[#3b82f6] mr-2"/>
-                        <div>
-                          <div className="font-medium">{callData.audiofile_name.split(".")[0].slice(-10)}</div>
-                          <div className="flex items-center gap-2 text-sm text-gray-500">
-                            <Badge variant="outline" className={getLanguageColor(callData.language_code)}>
-                              <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path
-                                  fillRule="evenodd"
-                                  d="M7 2a1 1 0 011 1v1h3a1 1 0 110 2H9.578a18.87 18.87 0 01-1.724 4.78c.29.354.596.696.914 1.026a1 1 0 11-1.44 1.389c-.188-.196-.373-.396-.554-.6a19.098 19.098 0 01-3.107 3.567 1 1 0 01-1.334-1.49 17.087 17.087 0 003.13-3.733 18.992 18.992 0 01-1.487-2.494 1 1 0 111.79-.89c.234.47.489.928.764 1.372.417-.934.752-1.913.997-2.927H3a1 1 0 110-2h3V3a1 1 0 011-1zm6 6a1 1 0 01.894.553l2.991 5.982a.869.869 0 01.02.037l.99 1.98a1 1 0 11-1.79.895L15.383 16h-4.764l-.724 1.447a1 1 0 11-1.788-.894l.99-1.98.019-.038 2.99-5.982A1 1 0 0113 8zm-1.382 6h2.764L13 12.236 11.618 14z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
-                              {getLanguageLabel(callData.language_code)}
-                            </Badge>
-                          </div>
-                        </div>
+                        <div className="font-medium">{jobId.slice(-10)}</div>
+                        <Badge variant="outline" className={getLanguageColor(callData.language_code)}>
+                          <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M7 2a1 1 0 011 1v1h3a1 1 0 110 2H9.578a18.87 18.87 0 01-1.724 4.78c.29.354.596.696.914 1.026a1 1 0 11-1.44 1.389c-.188-.196-.373-.396-.554-.6a19.098 19.098 0 01-3.107 3.567 1 1 0 01-1.334-1.49 17.087 17.087 0 003.13-3.733 18.992 18.992 0 01-1.487-2.494 1 1 0 111.79-.89c.234.47.489.928.764 1.372.417-.934.752-1.913.997-2.927H3a1 1 0 110-2h3V3a1 1 0 011-1zm6 6a1 1 0 01.894.553l2.991 5.982a.869.869 0 01.02.037l.99 1.98a1 1 0 11-1.79.895L15.383 16h-4.764l-.724 1.447a1 1 0 11-1.788-.894l.99-1.98.019-.038 2.99-5.982A1 1 0 0113 8zm-1.382 6h2.764L13 12.236 11.618 14z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          {getLanguageLabel(callData.language_code)}
+                        </Badge>
+                      </div>
+                      {/* Audio player below */}
+                      <div className="w-full">
+                        <AudioPlayer jobId={jobId} />
                       </div>
                     </div>
 
@@ -420,7 +423,7 @@ export default function CallAnalysisDashboard() {
                   size="sm"
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="w-8 h-8 "
+                  className="w-8 h-8"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </Button>
@@ -434,5 +437,3 @@ export default function CallAnalysisDashboard() {
     </div>
   )
 }
-
-
