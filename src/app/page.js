@@ -19,6 +19,12 @@ export default function CallAnalysisDashboard() {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
 
+  const getCallQualityColor = (score) => {
+    if (score >= 80) return "text-green-600"
+    if (score >= 60) return "text-yellow-600"
+    return "text-red-600"
+  }
+
   useEffect(() => {
     fetchCalls()
   }, [])
@@ -229,7 +235,7 @@ export default function CallAnalysisDashboard() {
             <button className="flex items-center gap-2 text-gray-600 hover:text-gray-800">←</button>
             <h1 className="text-xl md:text-2xl font-semibold">Deep Dive Analysis</h1>
           </div>
-          <p className="text-gray-600 mb-6">Kalyan 100 Calls - {calls.length} calls analyzed</p>
+          <p className="text-gray-600 mb-6">Kalyan 527 Calls - {calls.length} calls analyzed</p>
 
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <Select value={timelineFilter} onValueChange={setTimelineFilter}>
@@ -272,11 +278,12 @@ export default function CallAnalysisDashboard() {
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="overflow-x-auto">
             <div className="min-w-[1200px]">
-              <div className="grid grid-cols-[2fr_2fr_1.5fr_1.5fr_2.5fr_0.5fr] gap-4 px-4 py-3 border-b bg-gray-50 font-medium text-sm text-gray-700">
+              <div className="grid grid-cols-[2fr_2fr_1.5fr_1.5fr_1fr_2.5fr_0.5fr] gap-4 px-4 py-3 border-b bg-gray-50 font-medium text-sm text-gray-700">
                 <div>CUSTOMER NUMBER</div>
                 <div>PRODUCTS DISCUSSED</div>
                 <div>PURCHASE INTENT</div>
                 <div>EXPECTED TIMELINE</div>
+                <div>CALL QUALITY</div>
                 <div>CONVERSATION TOPIC</div>
                 <div>ACTIONS</div>
               </div>
@@ -292,7 +299,7 @@ export default function CallAnalysisDashboard() {
                 return (
                   <div
                     key={call._id}
-                    className="grid grid-cols-[2fr_2fr_1.5fr_1.5fr_2.5fr_0.5fr] gap-4 px-4 py-4 border-b hover:bg-gray-50 items-start"
+                    className="grid grid-cols-[2fr_2fr_1.5fr_1.5fr_1fr_2.5fr_0.5fr] gap-4 px-4 py-4 border-b hover:bg-gray-50 items-start"
                   >
                     <div className="space-y-2">
                       {/* Customer number and language on top */}
@@ -359,6 +366,29 @@ export default function CallAnalysisDashboard() {
                         </svg>
                         {conversationOverview.expected_timeline || "Unknown"}
                       </Badge>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <div className="text-sm font-medium text-gray-900">
+                          {result.call_quality?.quality_score || 85}%
+                        </div>
+                        <div
+                          className={`w-2 h-2 rounded-full ${
+                            (result.call_quality?.quality_score || 85) >= 80
+                              ? "bg-green-500"
+                              : (result.call_quality?.quality_score || 85) >= 60
+                                ? "bg-yellow-500"
+                                : "bg-red-500"
+                          }`}
+                        ></div>
+                      </div>
+                      {result.call_quality?.issues_detected?.length > 0 && (
+                        <div className="text-xs text-red-600 mt-1">
+                          {result.call_quality.issues_detected.length} issue
+                          {result.call_quality.issues_detected.length !== 1 ? "s" : ""}
+                        </div>
+                      )}
                     </div>
 
                     <div className="text-sm text-gray-700">

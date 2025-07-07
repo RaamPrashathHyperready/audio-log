@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { X, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -7,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import AudioPlayer from "./audio-player"
 
 export default function CallDetailsModal({ call, onClose }) {
+  const [audioDuration, setAudioDuration] = useState(0)
+
   if (!call) return null
 
   const result = call.result || {}
@@ -75,14 +78,31 @@ export default function CallDetailsModal({ call, onClose }) {
     return labels[lang] || lang
   }
 
+  const formatDurationToText = (durationInSeconds) => {
+    if (!durationInSeconds || durationInSeconds === 0) return "Loading..."
+
+    const minutes = Math.floor(durationInSeconds / 60)
+    const seconds = Math.floor(durationInSeconds % 60)
+
+    if (minutes === 0) {
+      return `${seconds} second${seconds !== 1 ? "s" : ""}`
+    } else if (seconds === 0) {
+      return `${minutes} minute${minutes !== 1 ? "s" : ""}`
+    } else {
+      return `${minutes} minute${minutes !== 1 ? "s" : ""} ${seconds} second${seconds !== 1 ? "s" : ""}`
+    }
+  }
+
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose()
     }
   }
 
-  // Mock duration - you can calculate this from audio metadata
-  const mockDuration = "2 minutes 20 seconds"
+  // Callback to receive duration from AudioPlayer
+  const handleDurationUpdate = (duration) => {
+    setAudioDuration(duration)
+  }
 
   return (
     <div
@@ -93,7 +113,7 @@ export default function CallDetailsModal({ call, onClose }) {
         <div className="sticky top-0 bg-white border-b p-6 rounded-t-lg">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-semibold text-gray-900">Call Analytics - Sureshkumar ({customerNumber})</h2>
+              <h2 className="text-2xl font-semibold text-gray-900">Call Analytics - {customerNumber}</h2>
               <p className="text-gray-600 mt-1">Detailed analysis of the selected call</p>
             </div>
             <Button variant="ghost" size="sm" onClick={onClose}>
@@ -123,13 +143,13 @@ export default function CallDetailsModal({ call, onClose }) {
                     <div className="text-sm font-medium text-gray-600 mb-2">Duration</div>
                     <div className="flex items-center gap-2 text-blue-600">
                       <Clock className="w-4 h-4" />
-                      <span className="font-medium">{mockDuration}</span>
+                      <span className="font-medium">{formatDurationToText(audioDuration)}</span>
                     </div>
                   </div>
 
                   <div>
                     <div className="text-sm font-medium text-gray-600 mb-3">Audio Playback</div>
-                    <AudioPlayer jobId={jobId} variant="modal" />
+                    <AudioPlayer jobId={jobId} variant="modal" onDurationUpdate={handleDurationUpdate} />
                   </div>
                 </CardContent>
               </Card>
