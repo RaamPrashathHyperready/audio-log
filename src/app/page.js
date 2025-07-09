@@ -371,13 +371,13 @@ export default function CallAnalysisDashboard() {
                     <div>
                       <div className="flex items-center gap-2">
                         <div className="text-sm font-medium text-gray-900">
-                          {result.call_quality?.quality_score || 85}%
+                          {result.call_quality?.quality_score || 0}%
                         </div>
                         <div
                           className={`w-2 h-2 rounded-full ${
-                            (result.call_quality?.quality_score || 85) >= 80
+                            (result.call_quality?.quality_score || 0) >= 80
                               ? "bg-green-500"
-                              : (result.call_quality?.quality_score || 85) >= 60
+                              : (result.call_quality?.quality_score || 0) >= 60
                                 ? "bg-yellow-500"
                                 : "bg-red-500"
                           }`}
