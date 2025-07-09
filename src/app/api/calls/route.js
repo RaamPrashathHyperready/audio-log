@@ -1,13 +1,13 @@
 import { MongoClient } from "mongodb"
 
 const uri =
-  "mongodb+srv://raamprashatht:qiw24dSeWKhXOSKR@audiocluster.zcrdmjx.mongodb.net/?retryWrites=true&w=majority&appName=audioClusteri"
+  "mongodb+srv://fastapi:uHxu5.bHEkW-ECc@clusters0.v1ogl.mongodb.net/"
 const client = new MongoClient(uri)
 
 export async function GET() {
   try {
     await client.connect()
-    const database = client.db("audio")
+    const database = client.db("audio_candere")
     const collection = database.collection("call_analysis")
 
     const calls = await collection.find({}).toArray()
