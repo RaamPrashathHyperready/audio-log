@@ -355,7 +355,7 @@ export default function CallDetailsModal({ call, onClose }) {
                   <div>
                     <div className="text-sm font-medium text-gray-600">Quality Score</div>
                     <div className="flex items-center gap-2 mt-1">
-                      <div className="text-2xl font-bold text-green-600">{callQuality.quality_score || 85}%</div>
+                      <div className="text-2xl font-bold ">{callQuality.quality_score || 0}%</div>
                     </div>
                   </div>
                   <div>
@@ -369,7 +369,7 @@ export default function CallDetailsModal({ call, onClose }) {
                         ))}
                       </ul>
                     ) : (
-                      <span className="text-sm text-green-700">No issues detected</span>
+                      <span className="text-sm text-red-700">-</span>
                     )}
                   </div>
                 </CardContent>
